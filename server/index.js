@@ -32,9 +32,13 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
     console.log(`User connected`, socket.id);
+
+    socket.on("join-room", data => socket.join(data));//creating a room
+
     socket.on("client-message", (data) => {
         // console.log(data);
-        socket.broadcast.emit("server-message", data.message);
+        // socket.broadcast.emit("server-message", data.message);
+        socket.to(data.room).emit("server-message", data);
     })
 })
 

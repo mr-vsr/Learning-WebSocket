@@ -8,21 +8,33 @@ function App() {
 
   const [message, setMessage] = useState("");
   const [messageReceived, setMessageReceived] = useState("");
+  const [room, setRoom] = useState("");
 
   const sendMessage = () => {
     console.log(messageReceived);
-    socket.emit("client-message",{message});
+    socket.emit("client-message",{message,room});
   }
+
+  const joinRoom = () => {
+    if (room !== "") {
+      socket.emit("join-room", room);
+    }
+  };
 
   useEffect(() => {
     socket.on("server-message", (data) => {
-      setMessageReceived(data);
+      setMessageReceived(data.message);
     });
-  }, []);
+  }, [socket]);
 
   return (
     <>
       <div className="App">
+        <input
+          placeholder="Room Number..." 
+          onChange={(event)=> setRoom(event.target.value)}
+          />
+        <button onClick={joinRoom}>Join Room</button>
         <input
           placeholder="Enter Your Message" 
           onChange={(event)=> setMessage(event.target.value)}
